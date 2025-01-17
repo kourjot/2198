@@ -29,7 +29,7 @@ const createUser=async(req,res)=>{
             gender,
             email,
             password:hashedPassword,
-            uniqueCode
+            uniqueCode,
         })
         await newUser.save();
         res.status(200).json({message:"User created successfully",uniqueCode:uniqueCode});

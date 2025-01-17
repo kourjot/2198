@@ -21,7 +21,11 @@ const userSchema=new Schema({
         type:String,
         required:true
     },
-
+    uniqueCode:{
+        type:Number,
+        required:true,
+        unique:true
+    }
 })
 const User=model("User",userSchema);
 
