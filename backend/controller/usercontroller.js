@@ -44,4 +44,12 @@ const userlogin =async(req,res)=>{
 
     }
 }
-export {createUser,userlogin}
+const getUser=async(req,res)=>{
+    try{
+        const user=await User.find();
+        res.status(200).json({user})
+    }catch(err){
+        res.status(500).json({error:err.message})
+    }
+}
+export {createUser,userlogin,getUser}
