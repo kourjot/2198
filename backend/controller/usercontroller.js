@@ -2,6 +2,18 @@ import {User } from "../model/userModel.js";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import "dotenv/config"
+const generateUniqueCode=async()=>{
+    let code;
+    let isunique=false;
+    while(!isunique){
+        code=Math.floor(1000+Math.random()*9000);
+        const existingUser=await User.findOne({uniqueCode:code})
+        if(!existingUser){
+            isunique=true;
+        }
+    }
+    return code;
+}
 const createUser=async(req,res)=>{
     const {username,age,gender,email,password}=req.body;
     try{
@@ -10,15 +22,17 @@ const createUser=async(req,res)=>{
             return res.status(400).json({error:"User already exists"})
         }
         const hashedPassword=await argon2.hash(password);
+        const uniqueCode=await generateUniqueCode()
         const newUser=new User({
             username,
             age,
             gender,
             email,
-            password:hashedPassword
+            password:hashedPassword,
+            uniqueCode
         })
         await newUser.save();
-        res.status(200).json({message:"User created successfully"})
+        res.status(200).json({message:"User created successfully",uniqueCode:uniqueCode});
     }catch(e){
         console.error(e);
         return res.status(500).json({error:"Server error"})
