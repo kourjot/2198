@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json({ limit: '20mb' }));
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: ["https://socialsync-1.netlify.app","*"],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Content-Disposition'],
     credentials: true 
