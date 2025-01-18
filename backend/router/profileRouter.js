@@ -35,66 +35,34 @@ import "dotenv/config"
 profileRouter.use(verityToken)
 profileRouter.get("/profile",getProfile)
 profileRouter.post('/update-profile',async (req, res) => {
-    // console.log("vijay");
-    // Check if email change is attempted
     if (req.body.email) {
       return res.status(400).json({ message: "You cannot change email" });
     }
   
     const token = req.headers.authorization;
-    // console.log(token);
     const { governmentId, hobbies, shortBio } = req.body;
   
-    // Check if token is provided
     if (!token) {
       return res.status(401).json({ message: "Authorization token is required" });
     }
-  
     try {
-      // Verify the token 
       const tokenDetail = jwt.verify(token, process.env.KEY);
-        console.log(tokenDetail);
-      // Find user by email
       const userExists = await User.findOne({ email: tokenDetail.email });
       if (!userExists) {
         return res.status(404).json({ message: "User not found" });
       }
   
-      // Check if profile has already been updated
-      if (userExists.hobbies) {
+      if (userExists.hobbies || userExists.shortBio || userExists.governmentId) {
         return res.status(200).json({ message: "Profile already updated"});
       }
-  
-      // Upload file to cloud service (Cloudinary, S3, etc.)
-    //   let url;
-      try {
-        // url = await V2.uploader.upload(req.file.path);
         userExists.governmentId = governmentId;
-        // userExists.profilepic = url.secure_url;
         userExists.hobbies = hobbies;
         userExists.shortBio = shortBio;
-      } catch (uploadError) {
-        return res.status(500).json({ message: "Error uploading file", error: uploadError });
-      }
+        await userExists.save();
   
-      // Update user profile details
-     
-  
-      // Delete the file from local storage after successful upload
-    //   fs.unlink(req.file.path, (err) => {
-    //     if (err) {
-    //       console.error('Error deleting file:', err);
-    //     }
-    //   });
-  
-      // Save updated user profile
-      await userExists.save();
-  
-      // Return updated profile
-      return res.status(200).json({ profile: userExists });
-  
-    } catch (err) {
-      console.error(err);
+        // Return updated profile
+        return res.status(200).json({ profile: userExists });
+      }catch (err) {
       return res.status(500).json({ message: "Error updating profile", error: err.message });
     }
   });
