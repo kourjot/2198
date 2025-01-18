@@ -1,5 +1,5 @@
 import { ootp } from "../model/otp_model.js"
-// import { User } from "../model/userModel.js"
+import { User } from "../model/userModel.js"
 import argon2 from "argon2"
 export const resetpass=async(req,res)=>{
     const {email,otp,newPassword}=req.body
@@ -12,11 +12,9 @@ export const resetpass=async(req,res)=>{
         return res.status(400).send("user not exist")
     }
     if(emailExist.otp==otp){
-       await user.updateOne({email},{$set:{password:hash}})
+       await User.updateOne({email},{$set:{password:hash}})
        await ootp.deleteOne({email})
-       res.status(200).json({hash,
-        message:"password reset successfully"
-       })
+       res.status(200).json({message:"password reset successfully"})
     }
    
     }catch(err){
