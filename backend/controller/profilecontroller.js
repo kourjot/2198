@@ -11,6 +11,7 @@ V2.config({
 
 
 const updateProfile = async (req, res) => {
+    return res.send("vijay")
     if(req.body.email){
         return res.status(404).json({message:"You can not change email"})
     }

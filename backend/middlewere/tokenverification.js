@@ -5,16 +5,14 @@ const verityToken=(req,res,next)=>{
     if(!authHeader){
         return res.status(401).json({error:"No token, authorization denied"})
     }
-    const token = authHeader.startsWith("Bearer ") 
-        ? authHeader.split(' ')[1] 
-        : authHeader;
-
     try{
-        const verified=jwt.verify(token,process.env.KEY)
-        // console.log(verified)
-        req.user=verified
-        // console.log("token verified");
-        next()
+        const verified=jwt.verify(authHeader,process.env.KEY)
+        if(verified){
+            next()
+        }
+        else{
+            return res.status(404).json({message:"token invalid"})
+        }
     }catch(err){
         res.status(403).json({error:"Token is not valid"})
     }
