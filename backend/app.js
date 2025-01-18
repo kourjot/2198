@@ -7,7 +7,7 @@ import {profileRouter} from "./router/profileRouter.js"
 import cors from "cors"
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '20mb' }));
 
 app.use(cors({
     origin: ["*","http://localhost:5173/"]
