@@ -58,7 +58,7 @@ const userlogin =async(req,res)=>{
         })
         return res.status(200).json({msg:"user login",token:token,unique:user.uniqueCode})
     }
-    res.status(200).json({message:"login success"})
+    return res.status(404).json({message:"Invalid credentials"})
     }catch(err){
         res.status(500).json({error: err.message})
     }
