@@ -17,7 +17,6 @@ const updateProfile = async (req, res) => {
         return res.status(404).json({message:"all fields are required"})
     }
     try{
-    
     const tokenDetail=jwt.verify(token,process.env.KEY)
     const userExists=await User.findOne({email:tokenDetail.email})
     if(userExists.profilepic){
