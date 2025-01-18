@@ -10,12 +10,14 @@ const app = express();
 app.use(express.json({ limit: '20mb' }));
 
 app.use(cors({
-    origin: "*",
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+    origin: (origin, callback) => {
+       
+        callback(null, true);  
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Content-Disposition'],
     credentials: true 
 }));
-
 app.use("/user", userRouter);
 
 app.use("/",profileRouter);
