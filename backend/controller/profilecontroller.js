@@ -47,7 +47,11 @@ const updateProfile = async (req, res) => {
 
 
 const getProfile=async(req,res)=>{
+    const token=req.headers.authorization
     try{
+        const tokenData=jwt.verify(token,process.env.KEY)
+        const userProfile=await User.findOne({email:tokenData.email}).select('-password')
+        res.status(200).json({message:userProfile})
        
     }catch(err){
         res.status(500).json({error:err.message})
