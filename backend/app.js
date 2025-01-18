@@ -10,10 +10,7 @@ const app = express();
 app.use(express.json({ limit: '20mb' }));
 
 app.use(cors({
-    origin: (origin, callback) => {
-       
-        callback(null, true);  
-    },
+    origin: "http://localhost:5173",
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Content-Disposition'],
     credentials: true 
