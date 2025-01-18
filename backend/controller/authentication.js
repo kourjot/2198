@@ -60,6 +60,7 @@ const userlogin =async(req,res)=>{
     }
     return res.status(404).json({message:"Invalid credentials"})
     }catch(err){
+        console.log(err)
         res.status(500).json({error: err.message})
     }
 }

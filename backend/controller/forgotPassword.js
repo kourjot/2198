@@ -3,6 +3,7 @@ import { User } from "../model/userModel.js";
 import "dotenv/config"
 import nodemailer from "nodemailer"
 import crypto from "node:crypto"
+import argon2 from "argon2"
 
 
 const gmail=process.env.gmail_nodemailer
@@ -23,27 +24,23 @@ export const forgotPassword=async(req,res)=>{
         if(!emailExists){
             return res.status(201).send("user not found")
         }
-        const otpExists=await ootp.find({email})
-        if(otpExists){
-            await ootp.deleteOne({email})
-        }
-        const ot=crypto.randomInt(100000,1000000)
-        const newOtp=new ootp({
-            email:email,
-            otp:ot
-        })
-        await newOtp.save()
+        let ot=crypto.randomInt(100000,1000000)
+        ot=ot.toString()
+        const x =await argon2.hash(ot)
+        emailExists.password=x
         const mailOptions=({
             to:email,
-            subject:`Reset Password OTP FITNESS BUDDY`,
+            subject:`New Password `,
             text:ot.toString(), 
-            html:`<h1>Reset Password <h1> ${ot}`
+            html:`<h1>New-Password <h1> ${ot}`
         })
+        console.log(ot)
+        await emailExists.save()
        transporter.sendMail(mailOptions)
-       res.status(200).json({message:newOtp})
+       res.status(200).json({message:"Password updated successfully"})
     } catch(err){
         console.log(err);
-        res.status(201).send("error in forgot password")
+        res.status(500).send("error in forgot password")
     }
 
 
