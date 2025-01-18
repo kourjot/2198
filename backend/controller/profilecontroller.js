@@ -16,9 +16,6 @@ const updateProfile = async (req, res) => {
     }
     const token=req.headers.authorization
     const{governmentId,hobbies,shortBio}=req.body
-    if(!governmentId || !hobbies || !shortBio || !req.file.path){
-        return res.status(404).json({message:"all fields are required"})
-    }
     try{
     const tokenDetail=jwt.verify(token,process.env.KEY)
     const userExists=await User.findOne({email:tokenDetail.email})
