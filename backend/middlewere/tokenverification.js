@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken"
 import "dotenv/config"
 const verityToken=(req,res,next)=>{
     const authHeader=req.header("Authorization")
+    
     if(!authHeader){
         return res.status(401).json({error:"No token, authorization denied"})
     }
