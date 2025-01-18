@@ -3,42 +3,9 @@ import "dotenv/config"
 import V2 from "cloudinary"
 import fs from "fs"
 import jwt from "jsonwebtoken"
-V2.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-    api_key: process.env.CLOUDINARY_API_KEY, 
-    api_secret: process.env.CLOUDINARY_API_SECRET
-})
+import path from "path"
 
 
-const updateProfile = async (req, res) => {
-    if(req.body.email){
-        return res.status(404).json({message:"You can not change email"})
-    }
-    const token=req.headers.authorization
-    const{governmentId,hobbies,shortBio}=req.body
-    try{
-    const tokenDetail=jwt.verify(token,process.env.KEY)
-    const userExists=await User.findOne({email:tokenDetail.email})
-    if(userExists.profilepic){
-        return res.status(404).json({message:"user already updated profile"})
-    }
-    let url=await V2.uploader.upload(req.file.path)
-    userExists.governmentId=governmentId
-    userExists.profilepic=url.secure_url
-    userExists.hobbies=hobbies
-    userExists.shortBio=shortBio
-    fs.unlinkSync(req.file.path)
-    await userExists.save()
-    return res.status(200).json({profile:userExists})
-
-
-
-
-    }catch(err){
-        console.log(err);
-        return res.status(500).json({message:"error in profile update",err:err})
-    }
-};
 
 
 
@@ -91,4 +58,4 @@ const getConnection=async(req,res)=>{
         res.status(500).json({error:err.message})
     }
 }
-export {getProfile,updateProfile,connectUser,getConnection};
+export {getProfile,connectUser,getConnection};
