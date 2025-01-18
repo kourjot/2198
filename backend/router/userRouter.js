@@ -1,5 +1,5 @@
 import {Router} from "express"
-import {createUser,userlogin,getUser} from "../controller/usercontroller.js";
+import {createUser,userlogin,getUser} from "../controller/authentication.js";
 const userRouter=Router();
 userRouter.post("/signup",createUser);
 userRouter.post("/login",userlogin);

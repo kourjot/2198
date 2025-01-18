@@ -22,7 +22,7 @@ const userSchema=new Schema({
         required:true
     },
     uniqueCode:{
-        type:Number,
+        type:String,
         required:true,
         unique:true
     }

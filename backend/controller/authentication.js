@@ -2,11 +2,17 @@ import {User } from "../model/userModel.js";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import "dotenv/config"
+import crypto from "crypto"
 const generateUniqueCode=async()=>{
     let code;
     let isunique=false;
     while(!isunique){
-        code=Math.floor(1000+Math.random()*9000);
+        const buffer =crypto.randomBytes(2)
+        const base36Code = buffer.readUInt16BE(0).toString(36).toUpperCase();
+        code = base36Code.slice(0, 4);
+        if(code.length<4){
+            continue 
+        }
         const existingUser=await User.findOne({uniqueCode:code})
         if(!existingUser){
             isunique=true;
@@ -47,10 +53,10 @@ const userlogin =async(req,res)=>{
     }
     const vaild=await argon2.verify(user.password,password)
     if(vaild){
-        const token=jwt.sign({name:user.username,email:user.email},process.env.KEY,{
+        const token=jwt.sign({_id:user._id,name:user.username,email:user.email},process.env.KEY,{
             expiresIn:"1 day"
         })
-        return res.status(200).json({msg:"user login ",token:token})
+        return res.status(200).json({msg:"user login ",token:token,unique:user.uniqueCode})
     }
     res.status(200).json({message:"login success"})
     }catch(err){
@@ -66,4 +72,5 @@ const getUser=async(req,res)=>{
         res.status(500).json({error:err.message})
     }
 }
+
 export {createUser,userlogin,getUser}
