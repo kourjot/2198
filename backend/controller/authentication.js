@@ -53,7 +53,7 @@ const userlogin =async(req,res)=>{
     }
     const vaild=await argon2.verify(user.password,password)
     if(vaild){
-        const token=jwt.sign({_id:user._id,name:user.username,email:user.email},process.env.KEY,{
+        const token=jwt.sign({_id:user._id,email:user.email,unique:user.uniqueCode},process.env.KEY,{
             expiresIn:"1 day"
         })
         return res.status(200).json({msg:"user login ",token:token,unique:user.uniqueCode})
@@ -61,7 +61,6 @@ const userlogin =async(req,res)=>{
     res.status(200).json({message:"login success"})
     }catch(err){
         res.status(500).json({error: err.message})
-
     }
 }
 const getUser=async(req,res)=>{

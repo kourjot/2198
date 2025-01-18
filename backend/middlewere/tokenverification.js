@@ -11,8 +11,9 @@ const verityToken=(req,res,next)=>{
 
     try{
         const verified=jwt.verify(token,process.env.KEY)
-        console.log(verified)
+        // console.log(verified)
         req.user=verified
+        // console.log("token verified");
         next()
     }catch(err){
         res.status(403).json({error:"Token is not valid"})

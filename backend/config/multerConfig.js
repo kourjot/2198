@@ -1,6 +1,7 @@
 import multer from 'multer';
 import path from 'path';
-
+import V2 from "cloudinary"
+import "dotenv/config"
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
@@ -10,25 +11,9 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 1000000 }, // 1MB limit
-    fileFilter: (req, file, cb) => {
-        checkFileType(file, cb);
-    }
-});
+const upload = multer({storage:storage});
 
-// Check file type
-function checkFileType(file, cb) {
-    const filetypes = /jpeg|jpg|png|pdf/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
 
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        cb('Error: Images and PDFs only!');
-    }
-}
+
 
 export { upload };

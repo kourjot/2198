@@ -1,53 +1,46 @@
 import {User} from '../model/userModel.js';
+import "dotenv/config"
+import V2 from "cloudinary"
+import fs from "fs"
+import jwt from "jsonwebtoken"
+V2.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
-import { AdditionalUserData } from '../model/adduserdata.js';
-import { upload } from '../config/multerConfig.js';
 
 const updateProfile = async (req, res) => {
-    const userUpdates = {};
-    const additionalUpdates = {};
-
-    if (req.file) {
-        additionalUpdates.fileUpload = req.file.path; // Store the uploaded file path
+    const token=req.headers.authorization
+    const{governmentId,hobbies,shortBio}=req.body
+    if(!governmentId || !hobbies || !shortBio || !req.file.path){
+        return res.status(404).json({message:"all fields are required"})
     }
-
-    for (const key in req.body) {
-        if (req.body[key] !== undefined) {
-            if (['governmentId', 'hobbies', 'shortBio'].includes(key)) {
-                additionalUpdates[key] = req.body[key];
-            } else {
-                userUpdates[key] = req.body[key];
-            }
-        }
+    try{
+    
+    const tokenDetail=jwt.verify(token,process.env.KEY)
+    const userExists=await User.findOne({email:tokenDetail.email})
+    if(userExists.profilepic){
+        return res.status(404).json({message:"user already updated profile"})
     }
+    let url=await V2.uploader.upload(req.file.path)
+    userExists.governmentId=governmentId
+    userExists.profilepic=url.secure_url
+    userExists.hobbies=hobbies
+    userExists.shortBio=shortBio
+    fs.unlinkSync(req.file.path)
+    await userExists.save()
+    return res.status(200).json({profile:userExists})
 
-    try {
-        const user = await User.findByIdAndUpdate(req.user._id, userUpdates, { new: true });
 
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
 
-        let additionalData = await AdditionalUserData.findOne({ userId: req.user._id });
 
-        if (additionalData) {
-            additionalData = await AdditionalUserData.findByIdAndUpdate(
-                additionalData._id,
-                additionalUpdates,
-                { new: true }
-            );
-        } else {
-            additionalUpdates.userId = req.user._id;
-            additionalData = await AdditionalUserData.create(additionalUpdates);
-        }
-
-        res.status(200).json({ msg: "Profile updated", user, additionalData });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({message:"error in profile update",err:err})
     }
 };
 
-// Use multer in the route
 
 
 

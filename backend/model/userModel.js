@@ -25,7 +25,20 @@ const userSchema=new Schema({
         type:String,
         required:true,
         unique:true
+    },
+    governmentId: {
+        type: String,
+    },
+    profilepic: {
+        type: String, 
+    },
+    hobbies: {
+        type: [String],
+    },
+    shortBio: {
+        type: String,
     }
+
 })
 const User=model("User",userSchema);
 
