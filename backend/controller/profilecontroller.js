@@ -1,14 +1,6 @@
 import {User} from '../model/userModel.js';
 import "dotenv/config"
-import V2 from "cloudinary"
-import fs from "fs"
 import jwt from "jsonwebtoken"
-import path from "path"
-
-
-
-
-
 
 const getProfile=async(req,res)=>{
     const token=req.headers.authorization
