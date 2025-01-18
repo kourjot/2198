@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use(cors({
     origin: "*",
-  }));
+}));
 app.use("/user", userRouter);
 
 app.use("/",profileRouter);
