@@ -10,13 +10,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-    origin: (origin, callback) => {
-      if (origin && origin.startsWith('http://localhost:')) {
-        callback(null, true);  
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: "*",
   }));
 app.use("/user", userRouter);
 
