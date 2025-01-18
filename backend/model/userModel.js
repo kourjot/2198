@@ -29,9 +29,9 @@ const userSchema=new Schema({
     governmentId: {
         type: String,
     },
-    profilepic: {
-        type: String, 
-    },
+    // profilepic: {
+    //     type: String, 
+    // },
     hobbies: {
         type: [String],
     },
