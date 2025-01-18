@@ -11,6 +11,9 @@ V2.config({
 
 
 const updateProfile = async (req, res) => {
+    if(req.body.email){
+        return res.status(404).json({message:"You can not change email"})
+    }
     const token=req.headers.authorization
     const{governmentId,hobbies,shortBio}=req.body
     if(!governmentId || !hobbies || !shortBio || !req.file.path){
@@ -45,39 +48,12 @@ const updateProfile = async (req, res) => {
 
 const getProfile=async(req,res)=>{
     try{
-        const user=await User.findById(req.user._id)
-        console.log(user)
-        if(!user){
-            return res.status(404).json({error:"User not found"})
-        }
-        res.status(200).json({user})
+       
     }catch(err){
         res.status(500).json({error:err.message})
     }
 }
-// const updateProfile = async (req, res) => {
-//     const updates = {};
 
-//     for (const key in req.body) {
-//         if (req.body[key] !== undefined) {
-//             updates[key] = req.body[key];
-//         }
-//     }
-
-//     try {
-//         const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true });
-
-//         console.log("Updated User:", user); 
-
-//         if (!user) {
-//             return res.status(404).json({ error: "User not found" });
-//         }
-
-//         res.status(200).json({ msg: "Profile updated", user });
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// };
 const connectUser=async(req,res)=>{
     const targetUserID=req.params.userId
     const userId=req.user._id
