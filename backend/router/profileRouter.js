@@ -62,7 +62,7 @@ profileRouter.post('/update-profile',async (req, res) => {
   
       // Check if profile has already been updated
       if (userExists.hobbies) {
-        return res.status(200).json({ message: "Profile already updated", profile: userExists });
+        return res.status(200).json({ message: "Profile already updated"});
       }
   
       // Upload file to cloud service (Cloudinary, S3, etc.)
