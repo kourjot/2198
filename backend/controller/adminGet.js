@@ -6,7 +6,7 @@ export const eventget=async(req,res)=>{
     try{
         const tokenData=jwt.verify(token,process.env.KEY)
         const data = await event.findOne({email:tokenData.email})
-        res.status(201).json({message:"fetced event",event:data})
+        res.status(200).json({message:"fetced event",event:data})
     }catch(err){
         return res.status(500).json({mesgae:"error in get evet admin",err:err})
     }

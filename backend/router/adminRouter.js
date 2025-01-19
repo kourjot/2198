@@ -5,6 +5,5 @@ const adminRouter=Router();
 adminRouter.post("/signup",createAdmin);
 adminRouter.post("/login",adminlogin)
 adminRouter.get("/getevent",eventget)
-
 adminRouter.delete("/deleteEvent",deleteEvent);
 export {adminRouter}
