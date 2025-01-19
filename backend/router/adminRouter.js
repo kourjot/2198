@@ -3,7 +3,5 @@ import {createAdmin,adminlogin,deleteEvent} from "../controller/admincontroller.
 const adminRouter=Router();
 adminRouter.post("/signup",createAdmin);
 adminRouter.post("/login",adminlogin);
-
 adminRouter.delete("/deleteEvent",deleteEvent);
-
 export {adminRouter}

@@ -48,15 +48,30 @@ const adminlogin =async(req,res)=>{
 
 
 
-const deleteEvent=async(req,res)=>{
-    const token=req.body.authorization
-    try{
-        const tokendetail=jwt.verify(token,process.env.KEY)
-        await event.deleteOne({email:tokendetail.email})
-        res.status(201).json({message:"event deleted sucessfully"})
-        jwt.expiresIn(token)
-    }catch(err){
-        return res.status(500).json({message:"error in delete event",err:err})
+const deleteEvent = async (req, res) => {
+    const token = req.headers.authorization;
+
+    try {
+        if (!token) {
+            return res.status(401).json({ message: "No token provided" });
+        }
+
+        // Verify the JWT token and extract details
+        const tokendetail = jwt.verify(token, process.env.KEY);
+
+        // Ensure you delete an event based on a valid identifier, e.g., title, eventId, etc.
+        const eventToDelete = await event.deleteOne({ email: tokendetail.email });
+
+        // Check if an event was found and deleted
+        if (eventToDelete.deletedCount === 0) {
+            return res.status(404).json({ message: "No event found to delete" });
+        }
+
+        res.status(200).json({ message: "Event deleted successfully" });
+
+    } catch (err) {
+        res.status(500).json({ message: "Error in deleting event", err: err.message });
     }
-}
+};
+
 export {createAdmin,adminlogin,deleteEvent}
