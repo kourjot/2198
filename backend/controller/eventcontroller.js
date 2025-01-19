@@ -3,6 +3,12 @@ import {event} from "../model/event.js"
 const createEvent=async(req,res)=>{
     const {title,category,date,time}=req.body
     try{
+        const eventDateTime = new Date(`${date}T${time}`);
+        if(eventDateTime<new Date()){
+            await event.deleteOne({ title, category, date, time });
+            return res.status(200).json({ message: "Event already completed" });
+        }
+        console.log(eventDateTime)
         const existingEvent = await event.findOne({ title, category, date, time });
         if (existingEvent) {
             return res.status(400).json({ error: "Event with the same details already exists" });
