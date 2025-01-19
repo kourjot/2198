@@ -2,6 +2,7 @@ import {admin}  from  "../model/admin.js"
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import "dotenv/config"
+import { event } from "../model/event.js";
 const createAdmin=async(req,res)=>{
     const {username,email,password}=req.body;
     try{
@@ -45,3 +46,16 @@ const adminlogin =async(req,res)=>{
     }
 }
 export {createAdmin,adminlogin}
+
+
+export const deleteEvent=async(req,res)=>{
+    const token=req.body.authorization
+    try{
+        const tokendetail=jwt.verify(token,process.env.KEY)
+        await event.deleteOne({email:tokendetail.email})
+        res.status(201).json({message:"event deleted sucessfully"})
+        jwt.expiresIn(token)
+    }catch(err){
+        return res.status(500).json({message:"error in delete event",err:err})
+    }
+}
