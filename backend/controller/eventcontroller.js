@@ -1,18 +1,20 @@
 import {event} from "../model/event.js"
-
+import "dotenv/config"
 const createEvent=async(req,res)=>{
+    const token=req.body.authorization
     const {title,category,date,time}=req.body
     try{
+        const tokendetail=jwt.verify(token,process.env.KEY)
         const eventDateTime = new Date(`${date}T${time}`);
         if(eventDateTime<new Date()){
-            await event.deleteOne({ title, category, date, time });
+            await event.deleteOne({email:tokendetail.email});
             return res.status(200).json({ message: "Event already completed" });
         }
-        const existingEvent = await event.findOne({ title, category, date, time });
+        const existingEvent = await event.findOne({email:tokendetail.email});
         if (existingEvent) {
-            return res.status(400).json({ error: "Event with the same details already exists" });
+            return res.status(400).json({ error: "one admin create only one event" });
         }
-        const newEvent=new event({title,category ,date, time})
+        const newEvent=new event({email:tokendetail.email,title,category ,date, time})
         await newEvent.save()
         res.status(201).json({message:"Event created successfully"})
     }catch(err){

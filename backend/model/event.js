@@ -1,5 +1,9 @@
 import {Schema,model} from "mongoose"
 const eventSchema=new Schema({
+    email:{
+        type:String,
+        requires:true
+    },
     title:{
         type:String,
         required:true
