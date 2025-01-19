@@ -9,7 +9,7 @@ import {eventRouter} from "./router/eventRouter.js"
 import cors from "cors"
 
 const app = express();
-app.use(express.json({ limit: '20mb' }));
+app.use(express.json({ limit: '16mb' }));
 
 app.use(cors());
 app.use("/admin", adminRouter);
