@@ -45,10 +45,10 @@ const adminlogin =async(req,res)=>{
         res.status(500).json({msg:"jot",err})
     }
 }
-export {createAdmin,adminlogin}
 
 
-export const deleteEvent=async(req,res)=>{
+
+const deleteEvent=async(req,res)=>{
     const token=req.body.authorization
     try{
         const tokendetail=jwt.verify(token,process.env.KEY)
@@ -59,3 +59,4 @@ export const deleteEvent=async(req,res)=>{
         return res.status(500).json({message:"error in delete event",err:err})
     }
 }
+export {createAdmin,adminlogin,deleteEvent}
