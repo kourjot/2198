@@ -1,7 +1,8 @@
 import {event} from "../model/event.js"
 import "dotenv/config"
+import jwt from "jsonwebtoken"
 const createEvent=async(req,res)=>{
-    const token=req.body.authorization
+    const token=req.headers.authorization
     const {title,category,date,time}=req.body
     try{
         const tokendetail=jwt.verify(token,process.env.KEY)
